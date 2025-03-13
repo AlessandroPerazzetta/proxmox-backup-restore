@@ -42,6 +42,6 @@ Restores VM from the backup path with specific storage destination.
 
 ## Notes
 
-- Backup files are stored in the default Proxmox backup location
+- Backup files are stored in the specified backup location
 - Make sure to have enough free space before running backups
 - Original VM IDs and names are preserved in backup files
