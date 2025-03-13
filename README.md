@@ -13,7 +13,7 @@ Typically useful for backup to external storage.
 ### Backup
 
 ```bash
-./backup-vm.sh <vmid> <path_to_backup>
+./backup-vm.sh <vmid> <path_to_backups>
 ```
 
 This will create a backup of the specified VM in the default Proxmox backup location.
