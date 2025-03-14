@@ -10,12 +10,22 @@ if [ -z "$1" ] || [ -z "$2" ]; then
     echo "    ./backup-vm.sh 100 /path/to/backups"
     echo " - Backup vm with id 100 and 101 to path:"
     echo "    ./backup-vm.sh 100,101 /path/to/backups"
+
+    echo "Specify backup mode (if not specified default snapshot mode is used):"
+    echo "  * snapshot – takes a live snapshot of a Proxmox virtual machine or container. This mode is used by default and allows you to perform a backup when a VM or container is running."
+    echo "  * suspend – this mode is used to suspend the VM or container before backing up which allows you to ensure that data is consistent. Short downtime caused by this mode is a disadvantage."
+    echo "  * stop – stops the virtual machine or container before performing the backup. This approach allows you to preserve backup data consistency but requires more extended downtime."
+    echo "For example:" 
+    echo "    ./backup-vm.sh all /path/to/backups snapshot"
+    echo "    ./backup-vm.sh 100 /path/to/backups snapshot"
+    echo "    ./backup-vm.sh 100,101 /path/to/backups snapshot"
     exit 1
 fi
 
 # Specify the path where the Proxmox backups are located
 vm_id="$1"
 backup_path="$2"
+backup_mode="$3"
 
 # Create backup directory if it doesn't exist
 mkdir -p "$backup_path"
@@ -32,9 +42,15 @@ backup_vm() {
 
     echo "Backing up VM $id..."
 
-    # Print the command to be executed
-    echo " - Executing command:  vzdump $id --compress zstd --dumpdir $backup_path"
-    vzdump $id --compress zstd --dumpdir "$backup_path"
+    if [ -n "$backup_mode" ]; then
+        # Print the command to be executed with mode
+        echo " - Executing command:  vzdump $id --compress zstd --dumpdir $backup_path --mode $backup_mode"
+        vzdump $id --compress zstd --dumpdir "$backup_path" --mode "$backup_mode"
+    else
+        # Print the command to be executed without mode
+        echo " - Executing command:  vzdump $id --compress zstd --dumpdir $backup_path"
+        vzdump $id --compress zstd --dumpdir "$backup_path"
+    fi
 }
 
 # Check if we should backup all VMs or specific ones
