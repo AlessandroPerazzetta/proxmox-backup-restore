@@ -42,7 +42,7 @@ backup_vm() {
 
     echo "Backing up VM $id..."
 
-    if [ -n "$backup_mode" ]; then
+    if [ -n "$backup_mode" ] && [[ "$backup_mode" =~ ^(snapshot|suspend|stop)$ ]]; then
         # Print the command to be executed with mode
         echo " - Executing command:  vzdump $id --compress zstd --dumpdir $backup_path --mode $backup_mode"
         vzdump $id --compress zstd --dumpdir "$backup_path" --mode "$backup_mode"
